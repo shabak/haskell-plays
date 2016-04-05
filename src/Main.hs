@@ -252,6 +252,79 @@ lengthList = foldr f 0 where
 sumOdd :: [Integer] -> Integer
 sumOdd = foldr (\x s -> if (odd x) then s + x else s ) 0
 
+oddsOnly :: Integral a => [a] -> [a]
+oddsOnly xs = helper [] xs where
+        helper ys []              = reverse ys
+        helper ys (x:xs) | odd x  = helper (x : ys) xs
+                         | even x = helper ys xs
+
+isPalindrome :: Eq a => [a] -> Bool
+isPalindrome xs = helper xs True where
+        helper []  res = res
+        helper [_] res = res
+        helper xs  res = helper (init (tail xs)) (if res then ((head xs) == (last xs)) else False)
+
+sum3 :: Num a => [a] -> [a] -> [a] -> [a]
+sum3 xs ys zs = helper (transpose [xs,ys,zs]) where
+    helper []       = []
+    helper (x:xyzs) = sum x : helper xyzs
+
+groupElems :: Eq a => [a] -> [[a]]
+groupElems xs = helper xs [] where
+    helper [] acc = reverse acc
+    helper (x:xs) [] = helper xs ([x] : [])
+    helper (x:xs) acc | x == (head $ head acc) = helper xs ((x : (head acc)) : tail acc)
+                      | otherwise = helper xs ([x] : acc)
+
+readDigits :: String -> (String, String)
+readDigits xs = span isDigit xs
+
+filterDisj :: (a -> Bool) -> (a -> Bool) -> [a] -> [a]
+filterDisj p1 p2 xs = filter (\x -> p1 x || p2 x) xs
+
+qsort :: Ord a => [a] -> [a]
+qsort []     = []
+qsort (p:xs) = (qsort lesser) ++ [p] ++ (qsort greater)
+      where
+          lesser  = filter (< p) xs
+          greater = filter (>= p) xs
+
+squares'n'cubes :: Num a => [a] -> [a]
+squares'n'cubes xs = concatMap (\x -> [x^2,x^3]) xs
+
+delAllUpper :: String -> String
+delAllUpper = unwords . filter (not . all isUpper) . words
+
+--qqq = unwords . map reverse . words
+
+max3 :: Ord a => [a] -> [a] -> [a] -> [a]
+max3 []     []     []     = []
+max3 (x:xs) (y:ys) (z:zs) = maximum [x,y,z] : max3 xs ys zs
+
+fibStream :: [Integer]
+fibStream = fibStream' 0 1
+--fibStream = fibStream'' [0] [1]
+fibStream' x y = x : (fibStream' y (x + y))
+-- 0 1 1 2 3 5  8  13 21 34 55
+-- 1 1 2 3 5 8  13 21 34 55
+-- 1 2 3 5 8 13 21 34 55
+fibStream'' (x:xs) (y:ys) = x : (fibStream'' [y] (zipWith (+) [x] [y]))
+
+nats = nats' 0
+nats' n = n : nats' (n + 1)
+
+repeat' = iterate repeatHelper
+repeatHelper x = x
+
+-- TODO: finish solution
+coins :: Num a => [a]
+coins = [2, 3, 7]
+change :: (Ord a, Num a) => a -> [[a]]
+change summa = [[ x | x<-coins, sum [x] == summa ]]
+
+concatList :: [[a]] -> [a]
+concatList = foldr (++) []
+
 meanList :: [Double] -> Double
 meanList xs = (sum xs) / (foldr (\x c -> c + 1) 0 xs)
 --meanList = fst + snd
