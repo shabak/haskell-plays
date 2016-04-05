@@ -1,0 +1,6 @@
+*.cabal
+*.ids
+*.iml
+*.ipr
+*.iws
+.DS_Store
